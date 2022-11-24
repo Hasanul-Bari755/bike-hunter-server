@@ -19,11 +19,16 @@ async function run() {
     try {
     const categoriesCollection = client.db('bike-hunter').collection('categories');
 
-    app.get('/categories', async (req, res)=>{
-        const query = {};
-        const categories = await categoriesCollection.find(query).toArray();
-        res.send(categories)
-    })
+        app.get('/categories', async (req, res)=>{
+            const query = {};
+            const categories = await categoriesCollection.find(query).toArray();
+            res.send(categories)
+        })
+        app.get('/categoriestype', async (req, res)=>{
+            const query = {};
+            const result = await categoriesCollection.find(query).project({ name: 1 }).toArray();
+            res.send(result)
+        })
     }
     finally {
         
