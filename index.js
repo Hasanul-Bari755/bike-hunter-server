@@ -37,4 +37,4 @@ app.get('/', async (req, res) => {
     res.send('bike-hunter server is running..');
 })
 
-app.listen(port, ()=> console.log(`bike-hunter server is running ${port}`))
+app.listen(port, ()=> console.log(`bike-hunter server is running to ${port}`))
