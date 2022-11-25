@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const port = process.env.PORT || 5000;
 const jwt = require("jsonwebtoken");
 const app = express();
@@ -52,6 +52,16 @@ async function run() {
       res.send(prodcuts);
     });
 
+    app.get("/products", async (req, res) => {
+      const email = req.query.email;
+
+      const query = {
+        email: email,
+      };
+      const products = await productCollection.find(query).toArray();
+      res.send(products);
+    });
+
     app.post("/products", async (req, res) => {
       const product = req.body;
       const result = await productCollection.insertOne(product);
@@ -76,6 +86,40 @@ async function run() {
     app.post("/users", async (req, res) => {
       const user = req.body;
       const result = await userCollection.insertOne(user);
+      res.send(result);
+    });
+
+    app.get("/users", async (req, res) => {
+      const query = {};
+      const allUsers = await userCollection.find(query).toArray();
+      res.send(allUsers);
+    });
+
+    app.get("/buyer", async (req, res) => {
+      const buyer = req.query.buyer;
+      const query = { usertype: buyer };
+      const buyers = await userCollection.find(query).toArray();
+      res.send(buyers);
+    });
+
+    app.get("/buyer", async (req, res) => {
+      const seller = req.query.seller;
+      const query = { usertype: seller };
+      const sellers = await userCollection.find(query).toArray();
+      res.send(sellers);
+    });
+
+    app.put("/users/admin/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+      const options = { upsert: true };
+      const updatedDoc = {
+        $set: {
+          role: "admin",
+        },
+      };
+      const result = userCollection.updateOne(filter, updatedDoc, options);
+      console.log(result);
       res.send(result);
     });
 
