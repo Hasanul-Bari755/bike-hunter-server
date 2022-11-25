@@ -102,11 +102,25 @@ async function run() {
       res.send(buyers);
     });
 
-    app.get("/buyer", async (req, res) => {
+    app.delete("/buyer/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await userCollection.deleteOne(query);
+      res.send(result);
+    });
+
+    app.get("/seller", async (req, res) => {
       const seller = req.query.seller;
       const query = { usertype: seller };
       const sellers = await userCollection.find(query).toArray();
       res.send(sellers);
+    });
+
+    app.delete("/seller/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await userCollection.deleteOne(query);
+      res.send(result);
     });
 
     app.put("/users/admin/:id", async (req, res) => {
