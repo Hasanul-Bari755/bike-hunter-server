@@ -137,6 +137,33 @@ async function run() {
       res.send(result);
     });
 
+    app.put("/advertise/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+      const option = { upsert: true };
+      const updatedDoc = {
+        $set: {
+          advertise: "advertise",
+        },
+      };
+      const result = await productCollection.updateOne(
+        filter,
+        updatedDoc,
+        option
+      );
+      res.send(result);
+    });
+
+    app.get("/advertiseproducts", async (req, res) => {
+      const query = {
+        advertise: "advertise",
+
+        status: "available",
+      };
+      const products = await productCollection.find(query).toArray();
+      res.send(products);
+    });
+
     app.post("/bookings", async (req, res) => {
       const booking = req.body;
       const result = await bookingCollection.insertOne(booking);
