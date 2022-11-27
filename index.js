@@ -215,8 +215,37 @@ async function run() {
         updatedDoc,
         options
       );
+      const verifyseller = await userCollection.updateOne(
+        filter,
+        updatedDoc,
+        options
+      );
       res.send(result);
     });
+
+    app.get("/verifyseller", async (req, res) => {
+      const email = req.query.email;
+      console.log(email);
+      const query = { email: email };
+      const seller = await userCollection.findOne(query);
+      res.send(seller);
+    });
+
+    // app.get("/status", async (req, res) => {
+    //   const filter = { usertype: "seller" };
+    //   const options = { upsert: true };
+    //   const updateDoc = {
+    //     $set: {
+    //       verifystatus: "notverified",
+    //     },
+    //   };
+    //   const result = await userCollection.updateMany(
+    //     filter,
+    //     updateDoc,
+    //     options
+    //   );
+    //   res.send(result);
+    // });
   } finally {
   }
 }
