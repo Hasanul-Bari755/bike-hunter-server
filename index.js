@@ -176,13 +176,34 @@ async function run() {
       res.send(result);
     });
 
-    app.put("/users/admin/:id", async (req, res) => {
+    app.get("/users/admin/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const user = await userCollection.findOne(query);
+      res.send({ isAdmin: user?.usertype === "admin" });
+    });
+
+    app.get("/users/seller/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const user = await userCollection.findOne(query);
+      res.send({ isSeller: user?.usertype === "seller" });
+    });
+
+    app.get("/users/buyer/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const user = await userCollection.findOne(query);
+      res.send({ isBuyer: user?.usertype === "buyer" });
+    });
+
+    app.patch("/users/admin/:id", async (req, res) => {
       const id = req.params.id;
       const filter = { _id: ObjectId(id) };
       const options = { upsert: true };
       const updatedDoc = {
         $set: {
-          role: "admin",
+          usertype: "admin",
         },
       };
       const result = userCollection.updateOne(filter, updatedDoc, options);
