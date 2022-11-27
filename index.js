@@ -65,6 +65,7 @@ async function run() {
       const category = req.params.name;
       const query = {
         category: category,
+        status: "available",
       };
 
       const prodcuts = await productCollection.find(query).toArray();
@@ -79,6 +80,39 @@ async function run() {
       };
       const products = await productCollection.find(query).toArray();
       res.send(products);
+    });
+
+    app.get("/reportedproducts", async (req, res) => {
+      const query = {
+        report: true,
+      };
+      const reportedProducts = await productCollection.find(query).toArray();
+      res.send(reportedProducts);
+    });
+
+    app.delete("/reportedProductDelete/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await productCollection.deleteOne(query);
+      res.send(result);
+    });
+
+    app.put("/report/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+      const options = { upsert: true };
+      const updatedDoc = {
+        $set: {
+          report: true,
+        },
+      };
+
+      const result = await productCollection.updateOne(
+        filter,
+        updatedDoc,
+        options
+      );
+      res.send(result);
     });
 
     app.post("/products", async (req, res) => {
