@@ -138,6 +138,14 @@ async function run() {
 
     app.post("/users", async (req, res) => {
       const user = req.body;
+      const query = {
+        email: user?.email,
+      };
+      const checkuser = await userCollection.findOne(query);
+      if (checkuser) {
+        return res.send({ data: "user data already saved in database" });
+      }
+
       const result = await userCollection.insertOne(user);
       res.send(result);
     });
@@ -257,23 +265,6 @@ async function run() {
       const myOrders = await bookingCollection.find(query).toArray();
       res.send(myOrders);
     });
-
-    // app.patch("/productstatus/:id", async (req, res) => {
-    //   const id = req.params.id;
-    //   const filter = { _id: ObjectId(id) };
-    //   const options = { upsert: true };
-    //   const updateDoc = {
-    //     $set: {
-    //       status: "sold",
-    //     },
-    //   };
-    //   const result = await productCollection.updateOne(
-    //     filter,
-    //     updateDoc,
-    //     options
-    //   );
-    //   res.send(result);
-    // });
 
     app.delete("/myproduct/:id", async (req, res) => {
       const id = req.params.id;
